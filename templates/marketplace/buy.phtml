@@ -1,0 +1,57 @@
+<div class="marketplace">
+    <h3>Offers at the marketplace</h3>
+<?php if (count($this->offers) > 0) { ?>
+    <table>
+        <tr>
+            <th>Offered to me</th>
+            <th>Ratio</th>
+            <th>Wanted from me</th>
+            <th>Player</th>
+            <th>Action</th>
+        </tr>
+    <?php foreach ($this->offers as $offer) { ?>
+        <tr>
+            <td>
+                <i class="<?= $offer['rid1'] ?>"></i><?= $offer['m1'] ?>
+            </td>
+            <td><?= $offer['ratio'] ?></td>
+            <td>
+                <i class="<?= $offer['rid2'] ?>"></i><?= $offer['m2'] ?>
+            </td>
+            <td>
+                <a href="/player/<?= $offer['uid'] ?>"><?= $offer['name'] ?></a>
+            </td>
+            <td>
+                <button class="green" onclick="acceptOffer(<?= $offer['id'] ?>)">Accept Offer</button>
+            </td>
+        </tr>
+    <?php  } ?>
+    </table>
+<?php } else { ?>
+    <div class="empty">No active offers found.</div>
+<?php } ?>
+</div>
+
+<script type="application/javascript">
+    jQuery(function () {
+        function acceptOffer(offerId) {
+            jQuery.ajax({
+                url: '/api/v1/marketplace/offers/' + offerId + '/accept',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                headers: {
+                    'X-Version': 0,
+                    Authorization: 'Bearer ' + Game.ajaxToken
+                },
+                success: function (body, status, jqXHR) {
+                    // refresh a page
+                    window.location = window.location.href;
+                },
+                error: function (jqXHR, status, errorThrown) {
+                    alert('Something went wrong');
+                }
+            });
+        }
+    });
+</script>
