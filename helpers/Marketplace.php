@@ -74,15 +74,14 @@ final class Marketplace {
             throw new \Game\ExceptionNotice('Not enough resources');
         }
 
-        // Amount of raw materials that the buyer has to ship
+        // Amount of resources that the buyer has to ship
         $buyerResources = ['r1' => 0, 'r2' => 0, 'r3' => 0, 'r4' => 0];
         $buyerResources['r' . $offer['rid2']] = $offer['m2'];
 
-        if (DB\Marketplace::getInstance()->deleteOfferById($offerId) !== 1) {
-            throw new \Game\ExceptionNotice('No offer anymore');
-        }
-
         $village->changeResources(-$buyerResources['r1'], -$buyerResources['r2'], -$buyerResources['r3'], -$buyerResources['r4']);
+
+        // remove offer
+        DB\Marketplace::getInstance()->deleteOfferById($offerId);
     }
 
     public function createOffer(array $data, Player $player): void {
