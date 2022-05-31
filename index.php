@@ -5,9 +5,9 @@ namespace Game\Router;
 // This file must only configure autoloader and library paths, making code further executable, no game mechanic there,
 require_once 'include/bootstrap.php';
 
-use Slim\App;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Routing\RouteCollectorProxy as Group;
+use Application\App;
+use Application\Exception\HttpNotFoundException;
+use Application\Routing\RouteCollectorProxy as Group;
 
 // Custom response builder and custom context for the app
 $response = new Response();
