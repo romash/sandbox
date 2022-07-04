@@ -1,0 +1,108 @@
+<div class="marketplace">
+    <h3>Create an offer</h3>
+    <div class="form">
+        I'm offering <input type="text" name="m1" value="" />
+        <select name="rid1" class="dropdown">
+            <option value="1" selected="selected">Lumber</option>
+            <option value="2">Clay</option>
+            <option value="3">Iron</option>
+            <option value="4">Crop</option>
+        </select>
+        <hr />
+        I'm searching <input type="text" name="m2" value="" />
+        <select name="rid2" class="dropdown">
+            <option value="1">Lumber</option>
+            <option value="2" selected="selected">Clay</option>
+            <option value="3">Iron</option>
+            <option value="4">Crop</option>
+        </select>
+        <button class="green" onclick="createOffer()">OK</button>
+    </div>
+
+    <h3>Own Offers</h3>
+<?php if (count($this->ownOffers) > 0) { ?>
+    <table>
+        <tr>
+            <th>-</th>
+            <th>I'm offering</th>
+            <th>Ratio</th>
+            <th>I'm searching</th>
+            <th>Action</th>
+        </tr>
+    <?php foreach ($this->ownOffers as $offer) { ?>
+        <tr>
+            <td>
+                <a href="javascript::void(0)" onclick="deleteOffer(<?= $offer['id'] ?>)"><img class="delete" /></a>
+            </td>
+            <td>
+                <i class="<?= $offer['rid1'] ?>"></i><?= $offer['m1'] ?>
+            </td>
+            <td><?= $offer['ratio'] ?></td>
+            <td>
+                <i class="<?= $offer['rid2'] ?>"></i><?= $offer['m2'] ?>
+            </td>
+            <td>
+                <a href="/player/<?= $offer['uid'] ?>"><?= $offer['name'] ?></a>
+            </td>
+            <td>
+                <button class="green" onclick="editOffer(<?= $offer['id'] ?>)">Accept Offer</button>
+            </td>
+        </tr>
+    <?php  } ?>
+    </table>
+<?php } else { ?>
+    <div class="empty">No active offers found.</div>
+<?php } ?>
+</div>
+
+<script type="application/javascript">
+    jQuery(function () {
+        function createOffer() {
+            var data = {
+                rid1: jQuery('select[name=rid1] option:checked').val(),
+                rid2: jQuery('select[name=rid2] option:checked').val(),
+                m1: jQuery('input[name=m1]').val(),
+                m2: jQuery('input[name=m2]').val()
+            };
+
+            jQuery.ajax({
+                url: '/api/v1/marketplace/offers/create',
+                method: 'POST',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                headers: {
+                    'X-Version': 0,
+                    Authorization: 'Bearer ' + Game.ajaxToken
+                },
+                success: function (body, status, jqXHR) {
+                    // refresh a page
+                    window.location = window.location.href;
+                },
+                error: function (jqXHR, status, errorThrown) {
+                    alert('Something went wrong');
+                }
+            });
+        }
+
+        function deleteOffer(offerId) {
+            jQuery.ajax({
+                url: '/api/v1/marketplace/offers/' + offerId + '/delete',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                headers: {
+                    'X-Version': 0,
+                    Authorization: 'Bearer ' + Game.ajaxToken
+                },
+                success: function (body, status, jqXHR) {
+                    // refresh a page
+                    window.location = window.location.href;
+                },
+                error: function (jqXHR, status, errorThrown) {
+                    alert('Something went wrong');
+                }
+            });
+        }
+    });
+</script>
